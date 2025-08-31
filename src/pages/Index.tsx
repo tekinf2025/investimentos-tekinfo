@@ -6,105 +6,23 @@ import { PurchaseForm } from "@/components/PurchaseForm";
 import { EditTransactionForm } from "@/components/EditTransactionForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useCompras, CompraData } from "@/hooks/useCompras";
 
 const Index = () => {
   const { toast } = useToast();
+  const { compras, isLoading, addCompra, updateCompra, deleteCompra } = useCompras();
   
-  // Dados das transações fornecidos pelo usuário
-  const initialTransactions: Transaction[] = [
-    {
-      id: "1",
-      tipo_ativo: "fundos_imobiliarios",
-      ativo: "GARE11",
-      data: "2025-08-28",
-      quantidade: 400,
-      preco: 9.04,
-      corretagem: 0,
-      valor_total: 3616
-    },
-    {
-      id: "2",
-      tipo_ativo: "fundos_imobiliarios",
-      ativo: "MXRF11",
-      data: "2025-08-27",
-      quantidade: 4750,
-      preco: 9.58,
-      corretagem: 0,
-      valor_total: 45505
-    },
-    {
-      id: "3",
-      tipo_ativo: "fundos_imobiliarios",
-      ativo: "MXRF11",
-      data: "2025-08-26",
-      quantidade: 250,
-      preco: 9.58,
-      corretagem: 0,
-      valor_total: 2395
-    },
-    {
-      id: "4",
-      tipo_ativo: "acoes",
-      ativo: "BBAS3",
-      data: "2025-08-22",
-      quantidade: 200,
-      preco: 19.75,
-      corretagem: 0,
-      valor_total: 3950
-    },
-    {
-      id: "5",
-      tipo_ativo: "acoes",
-      ativo: "GOAU4",
-      data: "2024-01-01",
-      quantidade: 3300,
-      preco: 9.73,
-      corretagem: 0,
-      valor_total: 32109
-    },
-    {
-      id: "6",
-      tipo_ativo: "acoes",
-      ativo: "PETR4",
-      data: "2025-07-07",
-      quantidade: 400,
-      preco: 34.34,
-      corretagem: 0,
-      valor_total: 13736
-    },
-    {
-      id: "7",
-      tipo_ativo: "acoes",
-      ativo: "BBAS3",
-      data: "2024-06-01",
-      quantidade: 700,
-      preco: 24.86,
-      corretagem: 0,
-      valor_total: 17402
-    },
-    {
-      id: "8",
-      tipo_ativo: "renda_fixa",
-      ativo: "Tesouro Selic 2029",
-      data: "2022-10-05",
-      quantidade: 3,
-      preco: 13590,
-      corretagem: 0,
-      valor_total: 40770
-    },
-    {
-      id: "9",
-      tipo_ativo: "acoes",
-      ativo: "BBAS3",
-      data: "2025-07-23",
-      quantidade: 300,
-      preco: 20.25,
-      corretagem: 0,
-      valor_total: 6075
-    }
-  ];
-
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  // Converter dados do Supabase para o formato esperado pelo componente
+  const transactions: Transaction[] = compras.map(compra => ({
+    id: compra.id.toString(),
+    tipo_ativo: compra.tipo_ativo,
+    ativo: compra.ativo,
+    data: compra.data,
+    quantidade: compra.quantidade,
+    preco: compra.preco,
+    corretagem: compra.corretagem || 0,
+    valor_total: compra.valor_total
+  }));
   const [searchTerm, setSearchTerm] = useState("");
   const [assetTypeFilter, setAssetTypeFilter] = useState("all");
   const [assetFilter, setAssetFilter] = useState("all");
@@ -152,8 +70,7 @@ const Index = () => {
 
   const handleEditSubmit = (updatedData: any) => {
     if (editingTransaction) {
-      const updatedTransaction: Transaction = {
-        ...editingTransaction,
+      const compraData: Omit<Partial<CompraData>, 'id'> = {
         tipo_ativo: updatedData.tipo_ativo,
         ativo: updatedData.ativo,
         data: format(updatedData.data, "yyyy-MM-dd"),
@@ -163,24 +80,16 @@ const Index = () => {
         valor_total: updatedData.valor_total,
       };
       
-      setTransactions(prev => 
-        prev.map(t => t.id === editingTransaction.id ? updatedTransaction : t)
-      );
+      updateCompra(parseInt(editingTransaction.id), compraData);
     }
   };
 
   const handleDelete = (id: string) => {
-    setTransactions(prev => prev.filter(t => t.id !== id));
-    toast({
-      title: "Transação excluída",
-      description: "A transação foi removida com sucesso.",
-      variant: "destructive",
-    });
+    deleteCompra(parseInt(id));
   };
 
   const handleNewPurchase = (purchaseData: any) => {
-    const newTransaction: Transaction = {
-      id: (transactions.length + 1).toString(),
+    const compraData: Omit<CompraData, 'id'> = {
       tipo_ativo: purchaseData.tipo_ativo,
       ativo: purchaseData.ativo,
       data: format(purchaseData.data, "yyyy-MM-dd"),
@@ -190,7 +99,7 @@ const Index = () => {
       valor_total: purchaseData.valor_total,
     };
     
-    setTransactions(prev => [newTransaction, ...prev]);
+    addCompra(compraData);
   };
 
   return (

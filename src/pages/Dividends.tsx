@@ -6,213 +6,22 @@ import { DividendForm } from "@/components/DividendForm";
 import { EditDividendForm } from "@/components/EditDividendForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useProventos, ProventoData } from "@/hooks/useProventos";
 
 const Dividends = () => {
   const { toast } = useToast();
+  const { proventos, isLoading, addProvento, updateProvento, deleteProvento } = useProventos();
   
-  // Dados dos proventos fornecidos pelo usuário
-  const initialDividends: DividendTransaction[] = [
-    {
-      id: "1",
-      tipo_provento: "dividendos",
-      ativo: "GARE11",
-      data: "2025-09-07",
-      valor: 0.08,
-      quantidade: 400,
-      a_receber: false
-    },
-    {
-      id: "2",
-      tipo_provento: "dividendos",
-      ativo: "MXRF11",
-      data: "2025-09-14",
-      valor: 0.1,
-      quantidade: 5000,
-      a_receber: false
-    },
-    {
-      id: "3",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-11-22",
-      valor: 0.28,
-      quantidade: 400,
-      a_receber: true
-    },
-    {
-      id: "4",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-12-22",
-      valor: 0.31,
-      quantidade: 400,
-      a_receber: true
-    },
-    {
-      id: "5",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2025-08-19",
-      valor: 0.08,
-      quantidade: 2500,
-      a_receber: false
-    },
-    {
-      id: "6",
-      tipo_provento: "dividendos",
-      ativo: "BBAS3",
-      data: "2024-12-05",
-      valor: 0.41,
-      quantidade: 1200,
-      a_receber: false
-    },
-    {
-      id: "7",
-      tipo_provento: "dividendos",
-      ativo: "BBAS3",
-      data: "2024-12-26",
-      valor: 0.15,
-      quantidade: 900,
-      a_receber: false
-    },
-    {
-      id: "8",
-      tipo_provento: "dividendos",
-      ativo: "BBAS3",
-      data: "2025-03-19",
-      valor: 0.44,
-      quantidade: 600,
-      a_receber: false
-    },
-    {
-      id: "9",
-      tipo_provento: "dividendos",
-      ativo: "BBAS3",
-      data: "2025-03-20",
-      valor: 0.13,
-      quantidade: 600,
-      a_receber: false
-    },
-    {
-      id: "10",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2024-05-25",
-      valor: 0.19,
-      quantidade: 600,
-      a_receber: false
-    },
-    {
-      id: "11",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2024-08-20",
-      valor: 0.08,
-      quantidade: 1200,
-      a_receber: false
-    },
-    {
-      id: "12",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-06-19",
-      valor: 0.36,
-      quantidade: 400,
-      a_receber: false
-    },
-    {
-      id: "13",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2025-03-16",
-      valor: 0.05,
-      quantidade: 2500,
-      a_receber: false
-    },
-    {
-      id: "14",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2025-05-19",
-      valor: 0.08,
-      quantidade: 3300,
-      a_receber: false
-    },
-    {
-      id: "15",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-09-22",
-      valor: 0.43,
-      quantidade: 400,
-      a_receber: true
-    },
-    {
-      id: "16",
-      tipo_provento: "dividendos",
-      ativo: "BBAS3",
-      data: "2025-06-12",
-      valor: 0.18,
-      quantidade: 1200,
-      a_receber: false
-    },
-    {
-      id: "17",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-08-20",
-      valor: 0.38,
-      quantidade: 400,
-      a_receber: false
-    },
-    {
-      id: "18",
-      tipo_provento: "dividendos",
-      ativo: "GOAU4",
-      data: "2024-12-16",
-      valor: 0.13,
-      quantidade: 2500,
-      a_receber: false
-    },
-    {
-      id: "19",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-05-19",
-      valor: 0.36,
-      quantidade: 400,
-      a_receber: false
-    },
-    {
-      id: "20",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2024-12-22",
-      valor: 1.55,
-      quantidade: 200,
-      a_receber: false
-    },
-    {
-      id: "21",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-02-19",
-      valor: 0.56,
-      quantidade: 200,
-      a_receber: false
-    },
-    {
-      id: "22",
-      tipo_provento: "dividendos",
-      ativo: "PETR4",
-      data: "2025-03-19",
-      valor: 0.67,
-      quantidade: 200,
-      a_receber: false
-    }
-  ];
-
-  const [dividends, setDividends] = useState<DividendTransaction[]>(initialDividends);
+  // Converter dados do Supabase para o formato esperado pelo componente
+  const dividends: DividendTransaction[] = proventos.map(provento => ({
+    id: provento.id.toString(),
+    tipo_provento: provento.tipo_provento,
+    ativo: provento.ativo,
+    data: provento.data,
+    valor: provento.valor,
+    quantidade: provento.quantidade,
+    a_receber: provento.a_receber
+  }));
   const [searchTerm, setSearchTerm] = useState("");
   const [assetTypeFilter, setAssetTypeFilter] = useState("all");
   const [assetFilter, setAssetFilter] = useState("all");
@@ -260,8 +69,7 @@ const Dividends = () => {
 
   const handleEditSubmit = (updatedData: any) => {
     if (editingDividend) {
-      const updatedDividend: DividendTransaction = {
-        ...editingDividend,
+      const proventoData: Omit<Partial<ProventoData>, 'id'> = {
         tipo_provento: updatedData.tipo_provento,
         ativo: updatedData.ativo,
         data: format(updatedData.data, "yyyy-MM-dd"),
@@ -270,24 +78,16 @@ const Dividends = () => {
         a_receber: updatedData.a_receber,
       };
       
-      setDividends(prev => 
-        prev.map(t => t.id === editingDividend.id ? updatedDividend : t)
-      );
+      updateProvento(parseInt(editingDividend.id), proventoData);
     }
   };
 
   const handleDelete = (id: string) => {
-    setDividends(prev => prev.filter(t => t.id !== id));
-    toast({
-      title: "Provento excluído",
-      description: "O provento foi removido com sucesso.",
-      variant: "destructive",
-    });
+    deleteProvento(parseInt(id));
   };
 
   const handleNewDividend = (dividendData: any) => {
-    const newDividend: DividendTransaction = {
-      id: (dividends.length + 1).toString(),
+    const proventoData: Omit<ProventoData, 'id'> = {
       tipo_provento: dividendData.tipo_provento,
       ativo: dividendData.ativo,
       data: format(dividendData.data, "yyyy-MM-dd"),
@@ -296,7 +96,7 @@ const Dividends = () => {
       a_receber: dividendData.a_receber,
     };
     
-    setDividends(prev => [newDividend, ...prev]);
+    addProvento(proventoData);
   };
 
   return (

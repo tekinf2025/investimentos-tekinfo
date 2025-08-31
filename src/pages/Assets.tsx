@@ -6,63 +6,20 @@ import { AssetForm } from "@/components/AssetForm";
 import { EditAssetForm } from "@/components/EditAssetForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useAtivos, AtivoData } from "@/hooks/useAtivos";
 
 const Assets = () => {
   const { toast } = useToast();
+  const { ativos, isLoading, addAtivo, updateAtivo, deleteAtivo } = useAtivos();
   
-  // Dados dos ativos fornecidos pelo usuário
-  const initialAssets: AssetTransaction[] = [
-    {
-      id: "1",
-      tipo_ativo: "fundos_imobiliarios",
-      ativo: "GARE11",
-      data: "2025-08-29",
-      preco: 9.04
-    },
-    {
-      id: "2",
-      tipo_ativo: "fundos_imobiliarios",
-      ativo: "MXRF11",
-      data: "2025-08-29",
-      preco: 9.58
-    },
-    {
-      id: "3",
-      tipo_ativo: "acoes",
-      ativo: "BBAS3",
-      data: "2025-08-29",
-      preco: 19.75
-    },
-    {
-      id: "4",
-      tipo_ativo: "acoes",
-      ativo: "GOAU4",
-      data: "2025-08-29",
-      preco: 9.73
-    },
-    {
-      id: "5",
-      tipo_ativo: "acoes",
-      ativo: "PETR4",
-      data: "2025-08-29",
-      preco: 34.34
-    }
-  ];
-
-  // Carregar dados do localStorage ou usar dados iniciais
-  const loadAssetsFromStorage = (): AssetTransaction[] => {
-    const stored = localStorage.getItem('assets-data');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return initialAssets;
-      }
-    }
-    return initialAssets;
-  };
-
-  const [assets, setAssets] = useState<AssetTransaction[]>(loadAssetsFromStorage);
+  // Converter dados do Supabase para o formato esperado pelo componente
+  const assets: AssetTransaction[] = ativos.map(ativo => ({
+    id: ativo.id.toString(),
+    tipo_ativo: ativo.tipo_ativo,
+    ativo: ativo.ativo,
+    data: ativo.data,
+    preco: ativo.preco
+  }));
   const [searchTerm, setSearchTerm] = useState("");
   const [assetTypeFilter, setAssetTypeFilter] = useState("all");
   const [assetFilter, setAssetFilter] = useState("all");
@@ -110,58 +67,34 @@ const Assets = () => {
 
   const handleEditSubmit = (updatedData: any) => {
     if (editingAsset) {
-      const updatedAsset: AssetTransaction = {
-        ...editingAsset,
+      const ativoData: Omit<Partial<AtivoData>, 'id'> = {
         tipo_ativo: updatedData.tipo_ativo,
         ativo: updatedData.ativo,
         data: format(updatedData.data, "yyyy-MM-dd"),
         preco: updatedData.preco,
       };
       
-      const newAssets = assets.map(t => t.id === editingAsset.id ? updatedAsset : t);
-      updateAssets(newAssets);
+      updateAtivo(parseInt(editingAsset.id), ativoData);
     }
   };
 
-  // Salvar no localStorage sempre que assets mudar
-  const updateAssets = (newAssets: AssetTransaction[]) => {
-    setAssets(newAssets);
-    localStorage.setItem('assets-data', JSON.stringify(newAssets));
-    // Disparar evento personalizado para notificar outras páginas
-    window.dispatchEvent(new CustomEvent('assets-data-updated'));
-  };
-
   const handleDelete = (id: string) => {
-    const newAssets = assets.filter(t => t.id !== id);
-    updateAssets(newAssets);
-    toast({
-      title: "Ativo excluído",
-      description: "O ativo foi removido com sucesso.",
-      variant: "destructive",
-    });
+    deleteAtivo(parseInt(id));
   };
 
   const handlePriceUpdate = (id: string, newPrice: number) => {
-    const newAssets = assets.map(asset => 
-      asset.id === id ? { ...asset, preco: newPrice } : asset
-    );
-    updateAssets(newAssets);
-    toast({
-      title: "Preço atualizado",
-      description: "O preço do ativo foi atualizado com sucesso.",
-    });
+    updateAtivo(parseInt(id), { preco: newPrice });
   };
 
   const handleNewAsset = (assetData: any) => {
-    const newAsset: AssetTransaction = {
-      id: (assets.length + 1).toString(),
+    const ativoData: Omit<AtivoData, 'id'> = {
       tipo_ativo: assetData.tipo_ativo,
       ativo: assetData.ativo,
       data: format(assetData.data, "yyyy-MM-dd"),
       preco: assetData.preco,
     };
     
-    updateAssets([newAsset, ...assets]);
+    addAtivo(ativoData);
   };
 
   return (

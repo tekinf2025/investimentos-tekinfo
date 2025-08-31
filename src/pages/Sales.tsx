@@ -6,35 +6,23 @@ import { SaleForm } from "@/components/SaleForm";
 import { EditSaleForm } from "@/components/EditSaleForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useVendas, VendaData } from "@/hooks/useVendas";
 
 const Sales = () => {
   const { toast } = useToast();
+  const { vendas, isLoading, addVenda, updateVenda, deleteVenda } = useVendas();
   
-  // Dados das vendas fornecidos pelo usuário
-  const initialSales: SaleTransaction[] = [
-    {
-      id: "1",
-      tipo_ativo: "renda_fixa",
-      ativo: "Tesouro Selic 2029",
-      data: "2025-08-26",
-      quantidade: 3,
-      preco: 16518.04,
-      corretagem: 0,
-      valor_total: 49554.12
-    },
-    {
-      id: "2",
-      tipo_ativo: "acoes",
-      ativo: "GOAU4",
-      data: "2025-07-17",
-      quantidade: 800,
-      preco: 9.21,
-      corretagem: 0,
-      valor_total: 7368
-    }
-  ];
-
-  const [sales, setSales] = useState<SaleTransaction[]>(initialSales);
+  // Converter dados do Supabase para o formato esperado pelo componente
+  const sales: SaleTransaction[] = vendas.map(venda => ({
+    id: venda.id.toString(),
+    tipo_ativo: venda.tipo_ativo,
+    ativo: venda.ativo,
+    data: venda.data,
+    quantidade: venda.quantidade,
+    preco: venda.preco,
+    corretagem: venda.corretagem || 0,
+    valor_total: venda.valor_total
+  }));
   const [searchTerm, setSearchTerm] = useState("");
   const [assetTypeFilter, setAssetTypeFilter] = useState("all");
   const [assetFilter, setAssetFilter] = useState("all");
@@ -82,8 +70,7 @@ const Sales = () => {
 
   const handleEditSubmit = (updatedData: any) => {
     if (editingSale) {
-      const updatedSale: SaleTransaction = {
-        ...editingSale,
+      const vendaData: Omit<Partial<VendaData>, 'id'> = {
         tipo_ativo: updatedData.tipo_ativo,
         ativo: updatedData.ativo,
         data: format(updatedData.data, "yyyy-MM-dd"),
@@ -93,24 +80,16 @@ const Sales = () => {
         valor_total: updatedData.valor_total,
       };
       
-      setSales(prev => 
-        prev.map(t => t.id === editingSale.id ? updatedSale : t)
-      );
+      updateVenda(parseInt(editingSale.id), vendaData);
     }
   };
 
   const handleDelete = (id: string) => {
-    setSales(prev => prev.filter(t => t.id !== id));
-    toast({
-      title: "Venda excluída",
-      description: "A venda foi removida com sucesso.",
-      variant: "destructive",
-    });
+    deleteVenda(parseInt(id));
   };
 
   const handleNewSale = (saleData: any) => {
-    const newSale: SaleTransaction = {
-      id: (sales.length + 1).toString(),
+    const vendaData: Omit<VendaData, 'id'> = {
       tipo_ativo: saleData.tipo_ativo,
       ativo: saleData.ativo,
       data: format(saleData.data, "yyyy-MM-dd"),
@@ -120,7 +99,7 @@ const Sales = () => {
       valor_total: saleData.valor_total,
     };
     
-    setSales(prev => [newSale, ...prev]);
+    addVenda(vendaData);
   };
 
   return (

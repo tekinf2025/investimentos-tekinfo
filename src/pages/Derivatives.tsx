@@ -6,127 +6,27 @@ import { DerivativeForm } from "@/components/DerivativeForm";
 import { EditDerivativeForm } from "@/components/EditDerivativeForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useDerivatives, DerivativeData } from "@/hooks/useDerivatives";
 
 const Derivatives = () => {
   const { toast } = useToast();
+  const { derivatives: derivativesData, isLoading, addDerivative, updateDerivative, deleteDerivative } = useDerivatives();
   
-  // Dados dos derivativos fornecidos pelo usuário
-  const initialDerivatives: DerivativeTransaction[] = [
-    {
-      id: "1",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "BBAS3",
-      codigo_opcao: "BBASL204",
-      strike: 20.44,
-      vencimento: "2025-12-19",
-      quantidade: 200,
-      premio: 1.5,
-      status: "aberta",
-      valor_total: 300
-    },
-    {
-      id: "2",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "BBAS3",
-      codigo_opcao: "BBASH290",
-      strike: 27.36,
-      vencimento: "2026-08-21",
-      quantidade: 400,
-      premio: 4.9,
-      status: "aberta",
-      valor_total: 1960
-    },
-    {
-      id: "3",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "BBAS3",
-      codigo_opcao: "BBASJ270",
-      strike: 25.61,
-      vencimento: "2026-10-16",
-      quantidade: 200,
-      premio: 5.5,
-      status: "aberta",
-      valor_total: 1100
-    },
-    {
-      id: "4",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "BBAS3",
-      codigo_opcao: "BBASJ210",
-      strike: 19.61,
-      vencimento: "2026-10-16",
-      quantidade: 400,
-      premio: 4.12,
-      status: "aberta",
-      valor_total: 1648
-    },
-    {
-      id: "5",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "PETR4",
-      codigo_opcao: "PETRJ362",
-      strike: 31.27,
-      vencimento: "2026-10-16",
-      quantidade: 200,
-      premio: 6.1,
-      status: "aberta",
-      valor_total: 1220
-    },
-    {
-      id: "6",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "PETR4",
-      codigo_opcao: "PETRD400",
-      strike: 30.25,
-      vencimento: "2026-04-17",
-      quantidade: 200,
-      premio: 7.9,
-      status: "aberta",
-      valor_total: 1580
-    },
-    {
-      id: "7",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "GOAU4",
-      codigo_opcao: "GOAUL100",
-      strike: 9.39,
-      vencimento: "2025-12-18",
-      quantidade: 1500,
-      premio: 2.08,
-      status: "aberta",
-      valor_total: 3120
-    },
-    {
-      id: "8",
-      data: "2025-08-01",
-      tipo_operacao: "venda",
-      tipo_derivativo: "call",
-      ativo_subjacente: "GOAU4",
-      codigo_opcao: "GOAUJ974",
-      strike: 9.4,
-      vencimento: "2026-10-15",
-      quantidade: 1000,
-      premio: 2.6,
-      status: "aberta",
-      valor_total: 2600
-    }
-  ];
-
-  const [derivatives, setDerivatives] = useState<DerivativeTransaction[]>(initialDerivatives);
+  // Converter dados do Supabase para o formato esperado pelo componente
+  const derivatives: DerivativeTransaction[] = derivativesData.map(derivative => ({
+    id: derivative.id.toString(),
+    data: derivative.data,
+    tipo_operacao: derivative.tipo_operacao,
+    tipo_derivativo: derivative.tipo_derivativo,
+    ativo_subjacente: derivative.ativo_subjacente,
+    codigo_opcao: derivative.codigo_opcao || '',
+    strike: derivative.strike,
+    vencimento: derivative.vencimento,
+    quantidade: derivative.quantidade,
+    premio: derivative.premio,
+    status: derivative.status,
+    valor_total: derivative.valor_total
+  }));
   const [searchTerm, setSearchTerm] = useState("");
   const [assetTypeFilter, setAssetTypeFilter] = useState("all");
   const [assetFilter, setAssetFilter] = useState("all");
@@ -175,8 +75,7 @@ const Derivatives = () => {
 
   const handleEditSubmit = (updatedData: any) => {
     if (editingDerivative) {
-      const updatedDerivative: DerivativeTransaction = {
-        ...editingDerivative,
+      const derivativeData: Omit<Partial<DerivativeData>, 'id'> = {
         data: format(updatedData.data, "yyyy-MM-dd"),
         tipo_operacao: updatedData.tipo_operacao,
         tipo_derivativo: updatedData.tipo_derivativo,
@@ -190,24 +89,16 @@ const Derivatives = () => {
         valor_total: updatedData.valor_total,
       };
       
-      setDerivatives(prev => 
-        prev.map(t => t.id === editingDerivative.id ? updatedDerivative : t)
-      );
+      updateDerivative(parseInt(editingDerivative.id), derivativeData);
     }
   };
 
   const handleDelete = (id: string) => {
-    setDerivatives(prev => prev.filter(t => t.id !== id));
-    toast({
-      title: "Derivativo excluído",
-      description: "O derivativo foi removido com sucesso.",
-      variant: "destructive",
-    });
+    deleteDerivative(parseInt(id));
   };
 
   const handleNewDerivative = (derivativeData: any) => {
-    const newDerivative: DerivativeTransaction = {
-      id: (derivatives.length + 1).toString(),
+    const newDerivativeData: Omit<DerivativeData, 'id'> = {
       data: format(derivativeData.data, "yyyy-MM-dd"),
       tipo_operacao: derivativeData.tipo_operacao,
       tipo_derivativo: derivativeData.tipo_derivativo,
@@ -221,7 +112,7 @@ const Derivatives = () => {
       valor_total: derivativeData.valor_total,
     };
     
-    setDerivatives(prev => [newDerivative, ...prev]);
+    addDerivative(newDerivativeData);
   };
 
   return (
