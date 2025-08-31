@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { useAtivos } from "@/hooks/useAtivos";
 
 // Tipos das transações das outras páginas
 interface Transaction {
@@ -60,62 +61,8 @@ interface DerivativeTransaction {
 }
 
 const Dashboard = () => {
-  // Carregar preços dos ativos do localStorage (página de Ativos)
-  const [assetPrices, setAssetPrices] = useState<AssetTransaction[]>([]);
-
-  // Função para carregar dados dos ativos
-  const loadAssetPrices = () => {
-    const stored = localStorage.getItem('assets-data');
-    if (stored) {
-      try {
-        const parsedAssets = JSON.parse(stored);
-        setAssetPrices(parsedAssets);
-      } catch {
-        // Fallback para dados iniciais se houver erro no parse
-        setAssetPrices([
-          { id: "1", tipo_ativo: "fundos_imobiliarios", ativo: "GARE11", data: "2025-08-29", preco: 9.04 },
-          { id: "2", tipo_ativo: "fundos_imobiliarios", ativo: "MXRF11", data: "2025-08-29", preco: 9.58 },
-          { id: "3", tipo_ativo: "acoes", ativo: "BBAS3", data: "2025-08-29", preco: 19.75 },
-          { id: "4", tipo_ativo: "acoes", ativo: "GOAU4", data: "2025-08-29", preco: 9.73 },
-          { id: "5", tipo_ativo: "acoes", ativo: "PETR4", data: "2025-08-29", preco: 34.34 }
-        ]);
-      }
-    } else {
-      // Dados iniciais se não houver no localStorage
-      setAssetPrices([
-        { id: "1", tipo_ativo: "fundos_imobiliarios", ativo: "GARE11", data: "2025-08-29", preco: 9.04 },
-        { id: "2", tipo_ativo: "fundos_imobiliarios", ativo: "MXRF11", data: "2025-08-29", preco: 9.58 },
-        { id: "3", tipo_ativo: "acoes", ativo: "BBAS3", data: "2025-08-29", preco: 19.75 },
-        { id: "4", tipo_ativo: "acoes", ativo: "GOAU4", data: "2025-08-29", preco: 9.73 },
-        { id: "5", tipo_ativo: "acoes", ativo: "PETR4", data: "2025-08-29", preco: 34.34 }
-      ]);
-    }
-  };
-
-  // Carregar dados na inicialização e quando há mudanças no localStorage
-  useEffect(() => {
-    loadAssetPrices();
-    
-    // Listener para detectar mudanças no localStorage
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'assets-data') {
-        loadAssetPrices();
-      }
-    };
-    
-    // Listener personalizado para mudanças feitas na mesma aba
-    const handleCustomUpdate = () => {
-      loadAssetPrices();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('assets-data-updated', handleCustomUpdate);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('assets-data-updated', handleCustomUpdate);
-    };
-  }, []);
+  // Hook para puxar dados dos ativos do Supabase
+  const { ativos } = useAtivos();
 
   // Dados das transações (mesmos dados das outras páginas)
   const purchases: Transaction[] = [
@@ -552,7 +499,7 @@ const Dashboard = () => {
 
   // Função auxiliar para obter preço real do ativo
   const getAssetRealPrice = (assetName: string): number => {
-    const asset = assetPrices.find(a => a.ativo === assetName);
+    const asset = ativos.find(a => a.ativo === assetName);
     return asset ? asset.preco : 0;
   };
 
@@ -688,7 +635,7 @@ const Dashboard = () => {
         variacao_percentual: preco_medio > 0 ? ((getAssetRealPrice(asset.ativo) - preco_medio) / preco_medio) * 100 : 0,
       };
     }).filter(asset => asset.quantidade_liquida > 0);
-  }, [assetPrices, derivatives]);
+  }, [ativos, derivatives]);
 
   // Tradução dos tipos de ativo
   const translateAssetType = (type: string) => {
