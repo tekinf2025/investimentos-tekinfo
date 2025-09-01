@@ -7,6 +7,7 @@ import { EditTransactionForm } from "@/components/EditTransactionForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras, CompraData } from "@/hooks/useCompras";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   const { toast } = useToast();
@@ -105,6 +106,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <div className="flex justify-between items-start">

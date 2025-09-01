@@ -7,6 +7,7 @@ import { EditSaleForm } from "@/components/EditSaleForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useVendas, VendaData } from "@/hooks/useVendas";
+import Logo from "@/components/Logo";
 
 const Sales = () => {
   const { toast } = useToast();
@@ -105,6 +106,7 @@ const Sales = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <div className="flex justify-between items-start">

@@ -7,6 +7,7 @@ import { EditAssetForm } from "@/components/EditAssetForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAtivos, AtivoData } from "@/hooks/useAtivos";
+import Logo from "@/components/Logo";
 
 const Assets = () => {
   const { toast } = useToast();
@@ -100,6 +101,7 @@ const Assets = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <div className="flex justify-between items-start">

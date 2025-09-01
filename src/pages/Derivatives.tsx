@@ -7,6 +7,7 @@ import { EditDerivativeForm } from "@/components/EditDerivativeForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useDerivatives, DerivativeData } from "@/hooks/useDerivatives";
+import Logo from "@/components/Logo";
 
 const Derivatives = () => {
   const { toast } = useToast();
@@ -118,6 +119,7 @@ const Derivatives = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <div className="flex justify-between items-start">

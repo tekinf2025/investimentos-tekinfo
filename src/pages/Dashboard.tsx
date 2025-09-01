@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { useAtivos } from "@/hooks/useAtivos";
+import Logo from "@/components/Logo";
 
 // Tipos das transações das outras páginas
 interface Transaction {
@@ -680,6 +681,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">

@@ -7,6 +7,7 @@ import { EditDividendForm } from "@/components/EditDividendForm";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useProventos, ProventoData } from "@/hooks/useProventos";
+import Logo from "@/components/Logo";
 
 const Dividends = () => {
   const { toast } = useToast();
@@ -102,6 +103,7 @@ const Dividends = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Logo />
         <Navigation />
         <div className="mb-8">
           <div className="flex justify-between items-start">
