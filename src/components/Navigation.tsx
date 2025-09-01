@@ -7,13 +7,13 @@ const Navigation = () => {
 
   return (
     <nav className="mb-8">
-      <div className="flex space-x-4">
-        <Link to="/">
+      <div className="flex justify-center space-x-4">
+        <Link to="/index">
           <Button 
-            variant={location.pathname === "/" ? "default" : "outline"}
+            variant={location.pathname === "/index" ? "default" : "outline"}
             className={cn(
               "transition-colors",
-              location.pathname === "/" 
+              location.pathname === "/index" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
             )}
@@ -73,12 +73,12 @@ const Navigation = () => {
             Derivativos
           </Button>
         </Link>
-        <Link to="/dashboard">
+        <Link to="/">
           <Button 
-            variant={location.pathname === "/dashboard" ? "default" : "outline"}
+            variant={location.pathname === "/" ? "default" : "outline"}
             className={cn(
               "transition-colors",
-              location.pathname === "/dashboard" 
+              location.pathname === "/" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
             )}
