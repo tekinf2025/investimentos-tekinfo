@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useEffect } from "react";
 
 export interface DividendTransaction {
   id: string;
@@ -35,6 +36,7 @@ interface DividendsTableProps {
   dividends: DividendTransaction[];
   onEdit: (dividend: DividendTransaction) => void;
   onDelete: (id: string) => void;
+  onStatusUpdate?: (id: string) => void;
 }
 
 const formatCurrency = (value: number) => {
@@ -59,7 +61,31 @@ const getProventoTypeLabel = (type: string) => {
   return labels[type] || type;
 };
 
-const DividendsTable = ({ dividends, onEdit, onDelete }: DividendsTableProps) => {
+const calculateDaysRemaining = (dateString: string) => {
+  const targetDate = new Date(dateString);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  targetDate.setHours(0, 0, 0, 0);
+  
+  const diffTime = targetDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays;
+};
+
+const DividendsTable = ({ dividends, onEdit, onDelete, onStatusUpdate }: DividendsTableProps) => {
+  
+  useEffect(() => {
+    // Verificar proventos que devem ter status atualizado
+    dividends.forEach(dividend => {
+      if (dividend.a_receber) {
+        const daysRemaining = calculateDaysRemaining(dividend.data);
+        if (daysRemaining <= 0 && onStatusUpdate) {
+          onStatusUpdate(dividend.id);
+        }
+      }
+    });
+  }, [dividends, onStatusUpdate]);
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       <div className="p-6 border-b border-border">
@@ -85,6 +111,8 @@ const DividendsTable = ({ dividends, onEdit, onDelete }: DividendsTableProps) =>
           <TableBody>
             {dividends.map((dividend) => {
               const totalValue = dividend.valor * dividend.quantidade;
+              const daysRemaining = dividend.a_receber ? calculateDaysRemaining(dividend.data) : 0;
+              
               return (
                 <TableRow 
                   key={dividend.id} 
@@ -109,12 +137,26 @@ const DividendsTable = ({ dividends, onEdit, onDelete }: DividendsTableProps) =>
                     {formatCurrency(totalValue)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge 
-                      variant={dividend.a_receber ? "default" : "secondary"}
-                      className={dividend.a_receber ? "bg-trading-blue text-white" : "bg-gray-100 text-gray-600"}
-                    >
-                      {dividend.a_receber ? "A receber" : "Recebido"}
-                    </Badge>
+                    {dividend.a_receber ? (
+                      <div className="flex flex-col items-center gap-1">
+                        <Badge 
+                          variant="default"
+                          className={daysRemaining <= 0 ? "bg-trading-red text-white" : "bg-trading-blue text-white"}
+                        >
+                          A receber
+                        </Badge>
+                        <span className={`text-xs ${daysRemaining <= 0 ? "text-trading-red font-semibold" : "text-text-secondary"}`}>
+                          {daysRemaining > 0 ? `${daysRemaining} dias` : daysRemaining === 0 ? "Hoje" : "Vencido"}
+                        </span>
+                      </div>
+                    ) : (
+                      <Badge 
+                        variant="secondary"
+                        className="bg-gray-100 text-gray-600"
+                      >
+                        Recebido
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="flex items-center justify-center gap-2">

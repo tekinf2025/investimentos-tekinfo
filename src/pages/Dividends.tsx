@@ -87,6 +87,11 @@ const Dividends = () => {
     deleteProvento(parseInt(id));
   };
 
+  const handleStatusUpdate = (id: string) => {
+    // Atualizar status para "Recebido" quando os dias chegarem a 0
+    updateProvento(parseInt(id), { a_receber: false });
+  };
+
   const handleNewDividend = (dividendData: any) => {
     const proventoData: Omit<ProventoData, 'id'> = {
       tipo_provento: dividendData.tipo_provento,
@@ -136,6 +141,7 @@ const Dividends = () => {
           dividends={filteredDividends}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onStatusUpdate={handleStatusUpdate}
         />
 
         <EditDividendForm
