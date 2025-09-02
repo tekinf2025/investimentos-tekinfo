@@ -100,16 +100,16 @@ const Assets = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
         <Logo />
         <Navigation />
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-text-primary mb-2">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
                 B3 - Cadastro de Ativos
               </h1>
-              <p className="text-text-secondary">
+              <p className="text-sm sm:text-base text-text-secondary">
                 Gerencie e visualize os preços dos ativos da bolsa brasileira
               </p>
             </div>

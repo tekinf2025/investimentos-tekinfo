@@ -89,8 +89,15 @@ const AssetsTable: React.FC<AssetsTableProps> = ({ assets, onEdit, onDelete, onP
     }
   };
   return (
-    <div className="rounded-md border bg-card">
-      <Table>
+    <div className="rounded-md border bg-card overflow-hidden">
+      <div className="p-4 sm:p-6 border-b border-border">
+        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">
+          Lista de Ativos
+        </h2>
+      </div>
+      
+      <div className="overflow-x-auto">
+        <Table className="min-w-[600px]">
         <TableHeader>
           <TableRow>
             <TableHead>Data</TableHead>
@@ -205,6 +212,7 @@ const AssetsTable: React.FC<AssetsTableProps> = ({ assets, onEdit, onDelete, onP
           )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 };

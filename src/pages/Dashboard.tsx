@@ -680,26 +680,26 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
         <Logo />
         <Navigation />
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
             Dashboard - Análise da Carteira
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-sm sm:text-base text-text-secondary">
             Visão consolidada dos seus investimentos na B3
           </p>
         </div>
 
         {/* Cards de resumo */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Investido</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Investido</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-text-primary">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary">
                 {new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -710,10 +710,10 @@ const Dashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total de Ativos</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Total de Ativos</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-text-primary">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary">
                 {assetAnalysis.length}
               </div>
             </CardContent>
@@ -721,10 +721,10 @@ const Dashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Proventos Recebidos</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Proventos Recebidos</CardTitle>
             </CardHeader>
             <CardContent>
-               <div className="text-2xl font-bold text-success">
+               <div className="text-lg sm:text-xl lg:text-2xl font-bold text-success">
                  {new Intl.NumberFormat('pt-BR', {
                    style: 'currency',
                    currency: 'BRL'
@@ -735,10 +735,10 @@ const Dashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Receita Derivativos</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Receita Derivativos</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-success">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-success">
                 {new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -749,7 +749,7 @@ const Dashboard = () => {
         </div>
 
         {/* Gráficos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Gráfico de Pizza - Distribuição por Ativo */}
           <Card>
             <CardHeader>
@@ -757,7 +757,7 @@ const Dashboard = () => {
               <CardDescription>Valor investido por ativo individual</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
                     data={assetPieData}
@@ -809,7 +809,7 @@ const Dashboard = () => {
               <CardDescription>Top 10 ativos por valor investido</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={topAssetsData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
@@ -843,7 +843,7 @@ const Dashboard = () => {
         </div>
 
         {/* Novos Gráficos - Proventos e Derivativos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Gráfico de Barras - Top Ativos por Proventos */}
           <Card>
             <CardHeader>
@@ -851,7 +851,7 @@ const Dashboard = () => {
               <CardDescription>Top 10 ativos por valor de proventos</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={assetAnalysis
                   .filter(asset => asset.valor_proventos > 0)
                   .sort((a, b) => b.valor_proventos - a.valor_proventos)
@@ -897,7 +897,7 @@ const Dashboard = () => {
               <CardDescription>Top 10 ativos por valor de Derivativos</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={assetAnalysis
                   .filter(asset => asset.valor_derivativos > 0)
                   .sort((a, b) => b.valor_derivativos - a.valor_derivativos)
@@ -945,7 +945,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs sm:text-sm min-w-[800px]">
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-left p-2 font-medium text-text-primary">Ativo</th>
@@ -1012,14 +1012,14 @@ const Dashboard = () => {
 
         {/* Operações Encerradas */}
         {closedOperations.length > 0 && (
-          <Card className="mt-8">
+          <Card className="mt-6 sm:mt-8">
             <CardHeader>
               <CardTitle>Operações Encerradas</CardTitle>
               <CardDescription>Posições que foram completamente vendidas</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-xs sm:text-sm min-w-[700px]">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left p-2 font-medium text-text-primary">Ativo</th>

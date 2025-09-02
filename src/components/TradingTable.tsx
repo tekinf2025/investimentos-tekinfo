@@ -61,14 +61,14 @@ const getAssetTypeLabel = (type: string) => {
 const TradingTable = ({ transactions, onEdit, onDelete }: TradingTableProps) => {
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
-      <div className="p-6 border-b border-border">
-        <h2 className="text-xl font-semibold text-text-primary">
+      <div className="p-4 sm:p-6 border-b border-border">
+        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">
           Histórico de Compras
         </h2>
       </div>
       
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="min-w-[600px]">
           <TableHeader>
             <TableRow className="border-border hover:bg-surface-hover">
               <TableHead className="text-text-secondary font-medium">Data</TableHead>

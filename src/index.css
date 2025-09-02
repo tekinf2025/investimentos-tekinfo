@@ -101,6 +101,43 @@ All colors MUST be HSL.
     --sidebar-border: 220 16% 22%;
     --sidebar-ring: 162 100% 50%;
   }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  html {
+    @apply dark;
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile-specific improvements */
+  @media (max-width: 640px) {
+    .container {
+      @apply px-3;
+    }
+    
+    h1, h2, h3 {
+      @apply leading-tight;
+    }
+    
+    table {
+      font-size: 0.875rem;
+    }
+    
+    .card {
+      @apply rounded-lg;
+    }
+    
+    /* Better touch targets for mobile */
+    button, .button {
+      @apply min-h-[44px] min-w-[44px];
+    }
+  }
 }
 
 /* Oculta completamente o selo da Lovable */
@@ -114,18 +151,4 @@ div[style*="Edit with Lovable"],
   pointer-events: none !important;
   position: absolute !important;
   z-index: -9999 !important;
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
-  
-  html {
-    @apply dark;
-  }
 }

@@ -6,13 +6,14 @@ const Navigation = () => {
   const location = useLocation();
 
   return (
-    <nav className="mb-8">
-      <div className="flex justify-center space-x-4">
+    <nav className="mb-6 sm:mb-8">
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
         <Link to="/index">
           <Button 
             variant={location.pathname === "/index" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/index" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
@@ -24,8 +25,9 @@ const Navigation = () => {
         <Link to="/sales">
           <Button 
             variant={location.pathname === "/sales" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/sales" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
@@ -37,8 +39,9 @@ const Navigation = () => {
         <Link to="/assets">
           <Button 
             variant={location.pathname === "/assets" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/assets" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
@@ -50,8 +53,9 @@ const Navigation = () => {
         <Link to="/dividends">
           <Button 
             variant={location.pathname === "/dividends" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/dividends" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
@@ -63,8 +67,9 @@ const Navigation = () => {
         <Link to="/derivatives">
           <Button 
             variant={location.pathname === "/derivatives" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/derivatives" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
@@ -76,8 +81,9 @@ const Navigation = () => {
         <Link to="/">
           <Button 
             variant={location.pathname === "/" ? "default" : "outline"}
+            size="sm"
             className={cn(
-              "transition-colors",
+              "transition-colors text-xs sm:text-sm",
               location.pathname === "/" 
                 ? "bg-primary text-primary-foreground" 
                 : "text-text-secondary hover:text-text-primary"
